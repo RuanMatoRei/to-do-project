@@ -1,28 +1,25 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useUser } from '~/stores/userStore'
+import { useRouter } from 'vue-router'
+import FolderHome from '~/layout/FolderHome.vue'
 
-const tasks = ref<any[]>([])  // array vazio por padrão
+const userStore= useUser()
+const router = useRouter()
 
-async function fetchUsers() {
-  try {
-    const data = await $fetch('/api/task')  // chama seu endpoint
-    console.log('🚀 Dados recebidos:', data)
-    tasks.value = data
-  } catch (error) {
-    console.error('❌ Erro ao buscar usuários:', error)
-  }
-}
+function logout() {
+  userStore.logout()
+  router.push('/login')
+} 
 
-onMounted(() => {
-  fetchUsers()
-})
 </script>
 
 <template>
   <div>
-    <h1>Testando</h1>
-    <ul>
-      <li v-for="u in tasks" :key="u.id">{{ u.title }}</li>
-    </ul>
+    <h1>Home</h1>
+    <button @click="logout">Sair</button>
+
+    <folder-home/>
+
   </div>
 </template>
