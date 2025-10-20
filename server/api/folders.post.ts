@@ -2,7 +2,7 @@
 import auth from '../utils/auth'
 import prisma from "../utils/prisma"
 import { createError, defineEventHandler } from "h3"
-import z, { string } from 'zod'
+import z from 'zod'
 
 const schema = z.object({
     name: z.string().min(3).max(20)
