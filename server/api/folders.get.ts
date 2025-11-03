@@ -7,6 +7,8 @@ export default defineEventHandler(async (ev) => {
     await auth(ev)
 
     const userId = ev.context.userId
+    console.log('User ID in folders.get:', userId)
+
     if(!userId) throw createError({ statusCode: 401, statusMessage: 'Id do usuário está inválido.' })
 
     try{
@@ -16,6 +18,7 @@ export default defineEventHandler(async (ev) => {
         })
 
         return folders
+        console.log('Fetched folders:', folders)
     } catch(err){
         console.error("Erro ao buscar folders:", err)
         throw createError({ statusCode: 500, statusMessage: 'Erro interno ao buscar pastas' })

@@ -7,6 +7,7 @@ import z from 'zod'
 const schema = z.object({ 
     title: z.string().min(3).max(35)
 })
+
 export default defineEventHandler(async (ev) => {
     await auth(ev)
 

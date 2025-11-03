@@ -2,8 +2,8 @@
 import { defineStore } from "pinia";
 import { useUser } from "./userStore";
 import { useFolder } from "./folderStore";
-import type { any } from "zod";
 
+// Definição da interface Task
 interface Task {
     title: string,
     done: boolean,
@@ -12,6 +12,7 @@ interface Task {
     id: number
 }
 
+// Definição da store de tarefas
 export const useTask = defineStore('task', {
     state: () => ({
         tasks: [] as Task[],
@@ -19,6 +20,7 @@ export const useTask = defineStore('task', {
     }),
 
     actions: {
+        // Criação de uma nova tarefa
         async creeateTask(folderId: number, title: string){
             const userStore = useUser()
             if (!userStore.token) {
@@ -52,6 +54,7 @@ export const useTask = defineStore('task', {
             }
         },
 
+        // Atualização do status "done" da tarefa
         async updateDone(taskId: number, folderId: number) {
             const token = useUser().token
             if (!token) return (this.erro = 'Token não encontrado')
@@ -75,6 +78,40 @@ export const useTask = defineStore('task', {
             }   
         },
 
+        // Atualização do título da tarefa
+        async updateTaskTitle(taskId: number, folderId: number, title: string) {
+            const userStore = useUser()
+            if (!userStore.token) {
+                this.erro = 'Token não encontrado'
+                return
+            }
+
+            this.erro = null
+
+            try {
+                const updated = await $fetch<Task>(`/api/task/${taskId}/task`, {
+                    method: 'put',
+                    body: { title },
+                    headers: { Authorization: `Bearer ${userStore.token}` }
+                })
+
+                // Atualiza localmente na pasta
+                const folderStore = useFolder()
+                const folder = folderStore.folders.find(f => f.id === folderId)
+                const task = folder?.task?.find((t: any) => t.id === taskId)
+                if (task) task.title = updated.title
+
+                // Atualiza também na lista global
+                const t = this.tasks.find(t => t.id === taskId)
+                if (t) t.title = updated.title
+
+                return updated
+            } catch (err: any) {
+                console.log(this.erro = err?.data?.statusMessage || 'Erro ao atualizar tarefa')
+            }
+        },
+
+        // Deleção de uma tarefa
         async deleteTask(taskId: number, folderId: number){
             const userStore = useUser()
             if (!userStore.token) {

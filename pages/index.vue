@@ -1,25 +1,22 @@
+<!-- /pages/index.vue -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { useUser } from '~/stores/userStore'
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue';
+import Header from '~/layout/header.vue';
 import FolderHome from '~/layout/FolderHome.vue'
+import { useThemeStore } from '~/stores/useTheme'
+import { useTheme } from 'vuetify';
 
-const userStore= useUser()
-const router = useRouter()
+const theme = useTheme()
+const themeStore = useThemeStore()
 
-function logout() {
-  userStore.logout()
-  router.push('/login')
-} 
-
+onMounted(() => {
+  themeStore.initTheme(theme)
+})
 </script>
 
 <template>
   <div>
-    <h1>Home</h1>
-    <button @click="logout">Sair</button>
-
-    <folder-home/>
-
+    <Header />
+    <FolderHome />
   </div>
 </template>
