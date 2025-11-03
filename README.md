@@ -4,6 +4,8 @@ Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduct
 
 ## Setup
 
+# Ao fazer login, não use um email real
+
 ### 1. Clone o projeto para o seu PC
 
 ```bash
